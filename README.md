@@ -40,6 +40,23 @@ $ jupyter lab
 and open load_and_test.ipynb
 ```
 
+## Architecture
+
+![Alt text](res/architecture.png)
+
+## Hide Patches Example
+
+![Alt text](res/has.png)
+
+## Result Sample
+
++ Green bounding box is prediction 
++ Red bounding box is ground truth
+
+![Alt text](res/result.png)
+
+![Alt text](res/result_2.png)
+
 
 - - -
 Author
