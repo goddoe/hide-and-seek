@@ -1,0 +1,16 @@
+.DS_Store
+.*.swp
+*.bin
+*.pyc
+.ipynb_checkpoints
+checkpoints/
+tmp/
+data/
+*.png
+*.pdf
+tensorboard/
+*.tar
+*.tar.gz
+trash/
+*.pickle
+fig/
