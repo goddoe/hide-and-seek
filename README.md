@@ -1,5 +1,10 @@
 # Hide and Seek - Weakly Supervised Object Detector
 Implementation of "Hide-and-Seek: Forcing a Network to be Meticulous for Weakly-supervised Object and Action Localization"
+[https://arxiv.org/abs/1704.04232][paper_link]
+
+[paper_link]: https://arxiv.org/abs/1704.04232
+
+- - -
 
 ## Download data 
 
