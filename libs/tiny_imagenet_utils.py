@@ -1,23 +1,23 @@
 import os
-from pprint import pprint
-from multiprocessing.pool import Pool
 
 import tensorflow as tf
 import numpy as np
 import pandas as pd
 from scipy.ndimage import imread
-from scipy.misc import imresize
 
 from libs.utils import split_train_valid
+
 
 def _bytes_feature(value):
     return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
+
 def _int64_feature(value):
     return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
 
+
 def idx_list_to_one_hot_list(idx_list, n_class):
-    # Y to one hot 
+    # Y to one hot
     n_sample = len(idx_list)
     tmp = np.zeros((n_sample, n_class))
     tmp[np.arange(n_sample), idx_list] = 1
@@ -30,27 +30,23 @@ def read_tiny_imagenet(path, train_ratio=0.8):
     """
     In this test we use validation set as test set
     """
-    """
-    Constant
-    """
+    # Path
     words_path = "{}/words.txt".format(path)
-    train_path = "{}/train".format(path) 
-    test_path = "{}/val".format(path) 
+    train_path = "{}/train".format(path)
+    test_path = "{}/val".format(path)
 
-    """
-    Get tiny imagenet dict
-    """
+    # Get tiny imagenet dict
     idx_word_dict = {}
     word_idx_dict = {}
 
     idx_nid_dict = {}
     nid_idx_dict = {}
-    
+
     nid_used = os.listdir(train_path)
     with open(words_path, "rt") as f:
         line_list = f.readlines()
 
-    idx = 0 
+    idx = 0
     for line in line_list:
         nid, word = line.split('\t')
         word = "{}_{}".format(idx, word.strip())
@@ -59,29 +55,25 @@ def read_tiny_imagenet(path, train_ratio=0.8):
             continue
         idx_word_dict[idx] = word
         word_idx_dict[word] = idx
-        
+
         idx_nid_dict[idx] = nid
         nid_idx_dict[nid] = idx
         idx += 1
 
-    """
-    Read data
-    """
+    # Read data
     train_dir_path_list = [os.path.join(train_path, name) for name in os.listdir(train_path)]
 
     X_train_valid = []
     Y_train_valid = []
     P_train_valid = []
-    
-    """ 
-    Read train, valid
-    """
+
+    # Read train, valid
     for train_dir_path in train_dir_path_list:
         loc_path = "{}/{}_boxes.txt".format(train_dir_path, os.path.basename(train_dir_path))
         img_dir_path = "{}/images".format(train_dir_path)
 
         img_path_list = [os.path.join(img_dir_path, name) for name in os.listdir(img_dir_path)]
-        
+
         with open(loc_path, "rt") as f:
             loc_line_list = f.readlines()
         file_name_loc_dict = {}
@@ -128,13 +120,10 @@ def read_tiny_imagenet(path, train_ratio=0.8):
     Y_valid = valid_data_list[1]
     P_valid = valid_data_list[2]
 
-
-    """
-    Read Test
-    """
+    # Read Test
     img_dir_path = "{}/images".format(test_path)
     annotation_path = "{}/val_annotations.txt".format(test_path)
-     
+
     annotation_pd = pd.read_csv(annotation_path, header=None, sep='\t', index_col=0)
     img_path_list = [os.path.join(img_dir_path, file_name) for file_name in os.listdir(img_dir_path)]
 
@@ -197,9 +186,8 @@ def save_with_tfrecord(tfrecord_dir, X, Y, Y_one_hot, P, label_depth, shard_size
 
     tfrecord_path_list = []
 
-
     try: os.makedirs(tfrecord_dir)
-    except: pass 
+    except: pass
 
     for shard_i in range(n_shard):
         shard_X = X[
@@ -219,17 +207,17 @@ def save_with_tfrecord(tfrecord_dir, X, Y, Y_one_hot, P, label_depth, shard_size
 
         with tf.python_io.TFRecordWriter(tfrecord_filename) as writer:
             for i in range(len(shard_X)):
-                img = shard_X[i] 
+                img = shard_X[i]
                 location = shard_P[i]
                 label = int(shard_Y[i])
                 label_one_hot = shard_Y_one_hot[i]
 
                 (height, width, channel) = img.shape
-                
+
                 img_raw = img.tostring()
                 location_raw = location.tostring()
                 label_one_hot_raw = label_one_hot.tostring()
-               
+
                 example = tf.train.Example(features=tf.train.Features(feature={
                     'height': _int64_feature(height),
                     'width': _int64_feature(width),
@@ -264,8 +252,5 @@ def tfrecord_parser(record):
     image = tf.reshape(image, [64, 64, 3])
     label_one_hot = tf.decode_raw(parsed['label_one_hot_raw'], tf.float64)
     location = tf.decode_raw(parsed['location_raw'], tf.int64)
-    
+
     return image, location, label_one_hot
-
-
-

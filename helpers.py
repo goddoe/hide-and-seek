@@ -6,9 +6,18 @@ import matplotlib.pyplot as plt
 from libs.image_utils import (calc_iou_accuracy,
                               calc_iou_top_1_accuracy,
                               draw_bounding_box)
-"""
-Helper
-"""
+
+
+def load_data_with_meta(pickle_data_path):
+    with open(pickle_data_path, "rb") as f:
+        data_dict = pickle.load(f)
+    return data_dict
+
+
+def load_meta(meta_path):
+    with open(meta_path, "rb") as f:
+        meta = pickle.load(f)
+    return meta
 
 
 def evaluate(model, X, P, Y_one_hot, name, thresh_cam=0.5, thresh_iou=0.5):
@@ -17,7 +26,7 @@ def evaluate(model, X, P, Y_one_hot, name, thresh_cam=0.5, thresh_iou=0.5):
     Y_pred = model.predict(X)
     Y_pred = np.argmax(Y_pred, axis=1)
     Y_real = np.argmax(Y_one_hot, axis=1)
-    
+
     gt_known_loc_accuracy = calc_iou_accuracy(
         bbox_list, P, thresh_iou=thresh_iou)
     top_1_loc_accuracy = calc_iou_top_1_accuracy(
@@ -25,6 +34,7 @@ def evaluate(model, X, P, Y_one_hot, name, thresh_cam=0.5, thresh_iou=0.5):
     print("GT-known-Loc {} iou_accuracy : {}".format(name, gt_known_loc_accuracy))
     print("Top-1 Loc {} iou_accuracy : {}".format(name, top_1_loc_accuracy))
     return cam_list, bbox_list, gt_known_loc_accuracy, top_1_loc_accuracy
+
 
 def visualize(X, P, Y, cam_list, bbox_list, idx_word_dict, n_show=3, start=0):
     fig, axs = plt.subplots(3, 2, figsize=(6, 18))
@@ -46,10 +56,11 @@ def visualize(X, P, Y, cam_list, bbox_list, idx_word_dict, n_show=3, start=0):
         draw_bounding_box(axs[i][1], loc_real, color='red')
     return fig, axs
 
+
 def visualize_cam(X, Y, cam_list, idx_word_dict, n_show=3, start=0):
     fig, axs = plt.subplots(n_show, 2, figsize=(6, 6*n_show))
     for i in range(n_show):
-        idx = start + i 
+        idx = start + i
 
         axs[i][0].imshow(X[idx])
         axs[i][0].set_title('{}'.format(idx_word_dict[Y[idx]]))
@@ -60,6 +71,7 @@ def visualize_cam(X, Y, cam_list, idx_word_dict, n_show=3, start=0):
                          alpha=0.5,
                          interpolation='nearest')
     return fig, axs
+
 
 def restore_preprocessed(X):
     result = (X*0.5+0.5)*255
