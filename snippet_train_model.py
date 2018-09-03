@@ -24,7 +24,6 @@ pretrained_ckpt_path = "{}/checkpoints/inception_v3/inception_v3.ckpt".format(pr
 
 vanila_model_save_path = "{}/checkpoints/vanila_inception_v3/vanila_inception_v3".format(project_path)
 has_model_save_path = "{}/checkpoints/has_inception_v3/has_inception_v3".format(project_path)
-rmd_model_save_path = "{}/checkpoints/rmd_inception_v3/rmd_inception_v3".format(project_path)
 
 # ==============================================================================
 

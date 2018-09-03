@@ -1,11 +1,10 @@
-import os
-import pickle
-import zipfile 
+#!/usr/bin/env python3
+import zipfile
 
 import wget
 
 from libs.tiny_imagenet_utils import read_tiny_imagenet, save_with_tfrecord
-from libs.various_utils import makedirs
+from libs.various_utils import makedirs, save_as_pickle
 from configs.project_config import project_path
 
 
@@ -20,6 +19,7 @@ tfrecord_valid_dir = "{}/tfrecord/valid".format(tiny_imagenet_path)
 tfrecord_test_dir = "{}/tfrecord/test".format(tiny_imagenet_path)
 
 pickle_save_path = "{}/pickle/tiny_imagenet.pickle".format(tiny_imagenet_path)
+meta_path = "{}/meta.pickle".format(tiny_imagenet_path)
 
 
 # ==============================================================================
@@ -87,6 +87,11 @@ save_with_tfrecord(tfrecord_test_dir,
 print("-"*30)
 print("Save the dataset into pickle")
 print("pickle_save_path: {}".format(pickle_save_path))
-makedirs(os.path.dirname(pickle_save_path))
-with open(pickle_save_path, "wb") as f:
-    pickle.dump(d, f)
+save_as_pickle(d, pickle_save_path)
+
+meta = {'idx_word_dict': d['idx_word_dict'],
+        'word_idx_dict': d['word_idx_dict'],
+        'idx_nid_dict': d['idx_nid_dict'],
+        'nid_idx_dict': d['nid_idx_dict']}
+save_as_pickle(meta, meta_path)
+

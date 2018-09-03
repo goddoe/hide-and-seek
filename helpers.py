@@ -8,18 +8,6 @@ from libs.image_utils import (calc_iou_accuracy,
                               draw_bounding_box)
 
 
-def load_data_with_meta(pickle_data_path):
-    with open(pickle_data_path, "rb") as f:
-        data_dict = pickle.load(f)
-    return data_dict
-
-
-def load_meta(meta_path):
-    with open(meta_path, "rb") as f:
-        meta = pickle.load(f)
-    return meta
-
-
 def evaluate(model, X, P, Y_one_hot, name, thresh_cam=0.5, thresh_iou=0.5):
     cam_list = model.calc_cam(X, Y_one_hot)
     bbox_list = model.location(cam_list=cam_list, thresh=0.5)

@@ -6,13 +6,11 @@ from tqdm import tqdm
 
 import tensorflow as tf
 import numpy as np
-import matplotlib.pyplot as plt
 
 from models.tf_template import BaseTfClassifier
 from models.inception.inception_v3 import inception_v3_base, inception_v3_arg_scope
 from models.inception.inception_v1 import inception_v1_base, inception_v1_arg_scope
 from models.alexnet.alexnet_v2 import alexnet_v2_base, alexnet_v2_arg_scope
-from models.preprocessing import inception_preprocessing
 from libs.various_utils import generate_id_with_date, get_date_time_prefix
 from libs.image_utils import find_location_by_cam
 
@@ -125,7 +123,7 @@ class Detector(BaseTfClassifier):
                  device=None,
                  **kwargs):
         super().__init__()
-        
+
         if optimizer is None:
             optimizer = tf.train.AdamOptimizer
 
@@ -158,7 +156,7 @@ class Detector(BaseTfClassifier):
             self.saver = tf.train.Saver()
 
         self.var_list = self.g.get_collection('variables')
- 
+
         gpu_options = tf.GPUOptions(allow_growth=True)
         self.sess = tf.Session(graph=self.g,
                                config=tf.ConfigProto(gpu_options=gpu_options))
@@ -332,7 +330,7 @@ class Detector(BaseTfClassifier):
                     losses = [loss for loss in self.g.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES) if loss.name.startswith(tuple(target_scope))]
                 else:
                     losses = self.g.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)
-        
+
                 if losses:
                     l2_regularizer = tf.add_n(losses)
 
@@ -361,7 +359,7 @@ class Detector(BaseTfClassifier):
     def location(self, X=None, Y=None, cam_list=None, thresh=0.5, batch_size=32):
         if cam_list is None:
             cam_list = self.calc_cam(X, Y, batch_size)
-        
+
         pool = Pool()
 
         bbox_list = pool.starmap(
@@ -459,22 +457,22 @@ class Detector(BaseTfClassifier):
         """
         tmp
         """
-       
+
         if flag_preprocess:
             X_tensor = self.X
         else:
             X_tensor = self.X_preprocessed
 
-        train_start_time = time.time() 
+        train_start_time = time.time()
         epoch_tqdm = tqdm(range(n_epoch))
         for epoch_i in epoch_tqdm:
             self.sess.run(init_dataset_train)
             batch_i = 0
             while True:
                 try:
-                    batch_start_time = time.time() 
+                    batch_start_time = time.time()
                     X_batch, Y_batch = self.sess.run([X, Y])
-                    
+
                     self.sess.run(
                         self.update_dict[mode],
                         feed_dict={X_tensor: X_batch,
@@ -483,10 +481,10 @@ class Detector(BaseTfClassifier):
                                    self.reg_lambda: reg_lambda,
                                    self.dropout_keep_prob: dropout_keep_prob,
                                    self.is_training: True})
-           
+
                     curr_time = time.time()
                     batch_time = curr_time - batch_start_time
-                
+
                     epoch_tqdm.set_description(
                         "epoch {}, batch {} takes: {:0.2f} sec".format(
                             epoch_i, batch_i, batch_time))
