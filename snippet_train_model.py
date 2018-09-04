@@ -15,11 +15,11 @@ NUM_CLASS = 200
 INPUT_SHAPE = (64, 64, 3)
 MODEL_BASE_INPUT_SHAPE = (224, 224, 3)
 
-tfrecord_train_dir = "{}/data/tiny_imagenet_200/tfrecord/train".format(project_path)
-tfrecord_valid_dir = "{}/data/tiny_imagenet_200/tfrecord/valid".format(project_path)
-tfrecord_test_dir = "{}/data/tiny_imagenet_200/tfrecord/test".format(project_path)
+tfrecord_train_dir = "{}/data/tiny-imagenet-200/tfrecord/train".format(project_path)
+tfrecord_valid_dir = "{}/data/tiny-imagenet-200/tfrecord/valid".format(project_path)
+tfrecord_test_dir = "{}/data/tiny-imagenet-200/tfrecord/test".format(project_path)
 
-meta_path = "{}/data/tiny_imagenet_200/meta.pickle".format(project_path)
+meta_path = "{}/data/tiny-imagenet-200/meta.pickle".format(project_path)
 pretrained_ckpt_path = "{}/checkpoints/inception_v3/inception_v3.ckpt".format(project_path)
 
 vanila_model_save_path = "{}/checkpoints/vanila_inception_v3/vanila_inception_v3".format(project_path)
@@ -27,12 +27,11 @@ has_model_save_path = "{}/checkpoints/has_inception_v3/has_inception_v3".format(
 
 # ==============================================================================
 
-model_base_name = "InceptionV3"
+model_base_name = "alexnet_v2"
 model = g.Detector(output_dim=NUM_CLASS,
                    input_shape=INPUT_SHAPE,
                    model_base_input_shape=MODEL_BASE_INPUT_SHAPE,
                    model_base_name=model_base_name,
-                   model_base_final_endpoint='Mixed_7c',
                    model_name="hide_and_seek")
 
 # ==============================================================================

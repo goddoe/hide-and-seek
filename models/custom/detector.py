@@ -501,7 +501,7 @@ class Detector(BaseTfClassifier):
             self.report_dict['train_loss'].append(train_loss)
             self.report_dict['valid_accuracy'].append(valid_accuracy)
             self.report_dict['train_accuracy'].append(train_accuracy)
-     
+
             if verbose_interval:
                 if epoch_i % verbose_interval == 0:
                     print("-" * 30)

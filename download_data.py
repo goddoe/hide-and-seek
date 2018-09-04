@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
+import os
 import zipfile
+import tarfile
 
 import wget
 
@@ -20,6 +22,8 @@ tfrecord_test_dir = "{}/tfrecord/test".format(tiny_imagenet_path)
 
 pickle_save_path = "{}/pickle/tiny_imagenet.pickle".format(tiny_imagenet_path)
 meta_path = "{}/meta.pickle".format(tiny_imagenet_path)
+
+pretrained_inception_v3_path = "{}/checkpoints/inception_v3/inception_v3.tar.gz".format(project_path)
 
 
 # ==============================================================================
@@ -95,3 +99,18 @@ meta = {'idx_word_dict': d['idx_word_dict'],
         'nid_idx_dict': d['nid_idx_dict']}
 save_as_pickle(meta, meta_path)
 
+
+# Download pretrained Model
+# Reference: https://github.com/tensorflow/models/tree/master/research/slim
+print("*"*30)
+print("Downlaod Inception V3")
+print("path: {}".format(pretrained_inception_v3_path))
+makedirs(os.path.dirname(pretrained_inception_v3_path))
+wget.download("http://download.tensorflow.org/models/inception_v3_2016_08_28.tar.gz",
+              pretrained_inception_v3_path)
+tar_file = tarfile.open(pretrained_inception_v3_path)
+tar_file.extractall(os.path.dirname(pretrained_inception_v3_path))
+tar_file.close()
+print("*"*30)
+print("Done!")
+print("*"*30)
