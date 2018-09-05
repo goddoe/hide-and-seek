@@ -26,6 +26,7 @@ IMAGE_PREPROCESSED_MEAN = -0.11571
 
 
 def build_inception_v3_base(X, is_training, final_endpoint='Mixed_7c'):
+    final_endpoint = 'Mixed_7c' if final_endpoint is None else final_endpoint
     with slim.arg_scope(inception_v3_arg_scope()):
         with slim.arg_scope([slim.batch_norm, slim.dropout],
                             is_training=is_training):
@@ -36,6 +37,7 @@ def build_inception_v3_base(X, is_training, final_endpoint='Mixed_7c'):
 
 
 def build_inception_v1_base(X, is_training, final_endpoint='Mixed_5c'):
+    final_endpoint = 'Mixed_5c' if final_endpoint is None else final_endpoint
     with slim.arg_scope(inception_v1_arg_scope()):
         with slim.arg_scope([slim.batch_norm, slim.dropout],
                             is_training=is_training):
@@ -53,7 +55,7 @@ def build_alexnet_v2_base(X, is_training, final_endpoint='conv5'):
     'alexnet_v2/conv5'
     'alexnet_v2/pool5'
     """
-
+    final_endpoint = 'conv5' if final_endpoint is None else final_endpoint
     with slim.arg_scope(inception_v1_arg_scope()):
         with slim.arg_scope([slim.batch_norm, slim.dropout],
                             is_training=is_training):
@@ -114,7 +116,7 @@ class Detector(BaseTfClassifier):
                  input_shape=None,
                  model_base_input_shape=(224, 224),
                  model_base_name="InceptionV3",
-                 model_base_final_endpoint='Mixed_7c',
+                 model_base_final_endpoint=None,
                  model_name="hide_and_seek",
                  optimizer=None,
                  cost_function=None,
@@ -161,8 +163,6 @@ class Detector(BaseTfClassifier):
         self.sess = tf.Session(graph=self.g,
                                config=tf.ConfigProto(gpu_options=gpu_options))
         self.sess.run(tf.variables_initializer(self.var_list))
-
-        self.pool = None
 
 
     def __del__(self):
