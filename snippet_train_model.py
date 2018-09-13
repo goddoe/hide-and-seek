@@ -27,7 +27,7 @@ has_model_save_path = "{}/checkpoints/has_inception_v3/has_inception_v3".format(
 
 # ==============================================================================
 
-model_base_name = "alexnet_v2"
+model_base_name = "InceptionV3"
 model = g.Detector(output_dim=NUM_CLASS,
                    input_shape=INPUT_SHAPE,
                    model_base_input_shape=MODEL_BASE_INPUT_SHAPE,
@@ -43,7 +43,7 @@ with model.g.as_default():
         tfrecord_train_dir=tfrecord_train_dir,
         tfrecord_valid_dir=tfrecord_valid_dir,
         tfrecord_test_dir=tfrecord_test_dir,
-        batch_size=200)
+        batch_size=32)
     (X, Y,
      init_dataset_train,
      init_dataset_train_has,
