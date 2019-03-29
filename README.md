@@ -62,9 +62,3 @@ and open load_and_test.ipynb
 
 ![Alt text](res/result_2.png)
 
-
-- - -
-Author
-+ Sung-ju Kim
-+ goddoe2@gmail.com
-
